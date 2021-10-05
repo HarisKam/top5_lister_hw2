@@ -25,7 +25,7 @@ export default class Workspace extends React.Component {
             } 
         return (
             <div id="top5-workspace">
-                <div id="workspace-edit">
+                
                     <div id="edit-numbering">
                         <div className="item-number">1.</div> 
                         <div className="item-number">2.</div>
@@ -33,6 +33,7 @@ export default class Workspace extends React.Component {
                         <div className="item-number">4.</div>
                         <div className="item-number">5.</div>
                     </div>
+                    <div id= "edit-items">
                     <ItemCard
                             itemKey={0}
                             itemName={currentList.items[0]}
@@ -63,7 +64,8 @@ export default class Workspace extends React.Component {
                             loadListCallback={loadListCallback}
                             renameItemCallback = {renameItemCallback}
                         />
-                </div>
+                        </div>
+            
             </div>
         )
     }

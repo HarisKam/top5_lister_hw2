@@ -42,15 +42,20 @@ export default class ItemCard extends React.Component {
 
         if (this.state.editActive) {
             return (
-                <input
+                <div
+                    id={'top5-item-' + itemKey}
+                    
+                    className={'top5-item'}>
+                    
+                    <input
                     id={"item-" + itemKey}
-                    className='top5-item'
                     type='text'
                     onKeyPress={this.handleKeyPress}
                     onBlur={this.handleBlur}
                     onChange={this.handleUpdate}
                     defaultValue={itemName}
-                />)
+                />
+                </div>)
         }
         else {
             return (

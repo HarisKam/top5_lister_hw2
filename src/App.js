@@ -78,9 +78,13 @@ class App extends React.Component {
             sessionData: {
                 nextKey: prevState.sessionData.nextKey,
                 counter: prevState.sessionData.counter,
-                keyNamePairs: prevState.sessionData.keyNamePairs
+                keyNamePairs: prevState.sessionData.keyNamePairs,
+                currentList: prevState.currentList
             }
         }), )
+        let list = this.state.currentList;
+            this.db.mutationUpdateList(list);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
     }
 
     renameList = (key, newName) => {

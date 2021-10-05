@@ -1,5 +1,8 @@
 import React from 'react';
 import './App.css';
+import jsTPS from './jsTPS';
+import ChangeItem_Transaction from './ChangeItem_Transaction';
+import MoveItem_Transaction from './MoveItem_Transaction';
 
 // IMPORT DATA MANAGEMENT AND TRANSACTION STUFF
 import DBManager from './db/DBManager';
@@ -10,6 +13,8 @@ import Banner from './components/Banner.js'
 import Sidebar from './components/Sidebar.js'
 import Workspace from './components/Workspace.js';
 import Statusbar from './components/Statusbar.js'
+import ListCard from './components/ListCard';
+import EditToolbar from './components/EditToolbar';
 
 class App extends React.Component {
     constructor(props) {
@@ -17,6 +22,8 @@ class App extends React.Component {
 
         // THIS WILL TALK TO LOCAL STORAGE
         this.db = new DBManager();
+
+        this.tps = new jsTPS();
 
         // GET THE SESSION DATA FROM OUR DATA MANAGER
         let loadedSessionData = this.db.queryGetSessionData();
@@ -71,6 +78,22 @@ class App extends React.Component {
             this.db.mutationCreateList(newList);
         });
     }
+
+    swapItem = (oldKey, newKey) => {
+        this.state.currentList.items.splice(newKey, 0, this.state.currentList.items.splice(oldKey, 1)[0]);
+        this.setState(prevState => ({
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: prevState.sessionData.keyNamePairs,
+                currentList: prevState.currentList 
+            }
+        }), )
+        let list = this.state.currentList;
+            this.db.mutationUpdateList(list);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+    }
+
     renameItem = (key, newName) => {
         this.state.currentList.items[key] = newName;
 
@@ -140,17 +163,21 @@ class App extends React.Component {
             // ANY AFTER EFFECTS?
         });
     }
-    deleteList = () => {
+    deleteList = (keyNamePair) => {
         // SOMEHOW YOU ARE GOING TO HAVE TO FIGURE OUT
         // WHICH LIST IT IS THAT THE USER WANTS TO
         // DELETE AND MAKE THAT CONNECTION SO THAT THE
         // NAME PROPERLY DISPLAYS INSIDE THE MODAL
-        this.showDeleteListModal();
+        this.showDeleteListModal(keyNamePair);
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
-    showDeleteListModal() {
+    showDeleteListModal(keyNamePair) {
         let modal = document.getElementById("delete-modal");
+        this.setState(prevState => ({
+            sessionData: prevState.sessionData,
+            keyNamePair : keyNamePair
+        }))
         modal.classList.add("is-visible");
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
@@ -158,10 +185,32 @@ class App extends React.Component {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
     }
+    undo = () =>{
+        if (this.tps.hasTransactionToUndo()) {
+            this.tps.undoTransaction();
+        }
+    }
+    redo = () => {
+        if (this.tps.hasTransactionToRedo()) {
+            this.tps.doTransaction(); 
+        }
+    }
+    addChangeItemTransaction = (id, newText) => {
+        
+        let oldText = this.state.currentList.items[id];
+        let transaction = new ChangeItem_Transaction(this, id, oldText, newText);
+        this.tps.addTransaction(transaction);
+    }
+    addMoveItemTransaction = (oldId, newId) => {
+        let transaction = new MoveItem_Transaction(this, oldId, newId);
+        this.tps.addTransaction(transaction);
+    }
     render() {
         return (
             <div id="app-root">
                 <Banner 
+                    undo = {this.undo}
+                    redo = {this.redo}
                     title='Top 5 Lister'
                     closeCallback={this.closeCurrentList} />
                 <Sidebar
@@ -175,13 +224,15 @@ class App extends React.Component {
                 />
                 <Workspace
                     currentList={this.state.currentList} 
-                    renameItemCallback = {this.renameItem}
+                    renameItemCallback = {this.addChangeItemTransaction}
+                    swapItemCallback = {this.addMoveItemTransaction}
                     />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal
+                    listKeyPair = {this.state.keyNamePair}
                     hideDeleteListModalCallback={this.hideDeleteListModal}
-                />
+                    />
             </div>
         );
     }

@@ -3,10 +3,10 @@ import ItemCard from "./ItemCard"
 
 export default class Workspace extends React.Component {
     render() {
-        const { heading,
-                currentList, 
+        const { currentList, 
                 loadListCallback,
-                renameItemCallback} = this.props;
+                renameItemCallback,
+                swapItemCallback} = this.props;
 
             if (currentList == null) {
                 return (
@@ -39,30 +39,40 @@ export default class Workspace extends React.Component {
                             itemName={currentList.items[0]}
                             loadListCallback={loadListCallback}
                             renameItemCallback = {renameItemCallback}
+                            swapItemCallback = {swapItemCallback}   
+                            draggable = "true"
                         />
                         <ItemCard
                             itemKey={1}
                             itemName={currentList.items[1]}
                             loadListCallback={loadListCallback}
                             renameItemCallback = {renameItemCallback}
+                            swapItemCallback = {swapItemCallback}
+                            draggable = "true"
                         />
                         <ItemCard
                             itemKey={2}
                             itemName={currentList.items[2]}
                             loadListCallback={loadListCallback}
                             renameItemCallback = {renameItemCallback}
+                            swapItemCallback = {swapItemCallback}
+                            draggable = "true"
                         />
                         <ItemCard
                             itemKey={3}
                             itemName={currentList.items[3]}
                             loadListCallback={loadListCallback}
                             renameItemCallback = {renameItemCallback}
+                            swapItemCallback = {swapItemCallback}
+                            draggable = "true"
                         />
                         <ItemCard
                             itemKey={4}
                             itemName={currentList.items[4]}
                             loadListCallback={loadListCallback}
                             renameItemCallback = {renameItemCallback}
+                            swapItemCallback = {swapItemCallback}
+                            draggable = "true"
                         />
                         </div>
             

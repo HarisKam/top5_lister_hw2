@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
 export default class DeleteModal extends Component {
+    setListKeyPair(keyPair) {
+        this.listKeyPair = keyPair;
+    }
     render() {
         const { listKeyPair, hideDeleteListModalCallback } = this.props;
         let name = "";

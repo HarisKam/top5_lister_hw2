@@ -12,14 +12,14 @@ export default class ItemCard extends React.Component {
 
     handleClick = (event) => {
         if (event.detail === 1) {
-            
+            this.handleBlur();
         }
         else if (event.detail === 2) {
             this.handleToggleEdit(event);
         }
     }
     handleToggleEdit = (event) => {
-        this.state.text = this.props.itemName;
+        this.state.text = this.props.itemName
         this.setState({
             editActive: !this.state.editActive
         });
@@ -43,21 +43,19 @@ export default class ItemCard extends React.Component {
     }
     handleDragOver = (event) => {
         event.preventDefault();
-    }
-    handleDragEnd = (event) => {
-        event.preventDefault();
-    }
-    handleDragEnter = (event) => {
-        event.preventDefault();
+        event.target.classList.add("top5-item-dragged-to");
     }
     handleDragLeave = (event) => {
+        console.log("sdasdasd");
         event.preventDefault();
+        event.target.classList.remove("top5-item-dragged-to");
     }
     handleDrop = (event) => {
         event.preventDefault();
         let oldKey = event.dataTransfer.getData("key");
         let newKey = event.target.id.substring(10);   
         this.props.swapItemCallback(oldKey, newKey);
+        event.target.classList.remove("top5-item-dragged-to");
     }
     getKey() {
         return this.itemKey;
@@ -82,8 +80,6 @@ export default class ItemCard extends React.Component {
                     onChange={this.handleUpdate}
                     onDragStart={this.handleDragStart}
                     onDragOver={this.handleDragOver}
-                    onDragEnd = {this.handleDragEnd}
-                    onDragEnter = {this.handleDragEnter}
                     onDragLeave = {this.handleDragLeave}
                     onDrop = {this.handleDrop}
                     defaultValue={itemName}
@@ -100,6 +96,7 @@ export default class ItemCard extends React.Component {
                     onDragStart = {this.handleDragStart}
                     onDragOver={this.handleDragOver}
                     onDrop = {this.handleDrop}
+                    onDragLeave = {this.handleDragLeave}
                     draggable = "true"
                     className={'top5-item'}>
                     {itemName}

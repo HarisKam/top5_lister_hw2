@@ -197,11 +197,21 @@ class App extends React.Component {
     undo = () =>{
         if (this.tps.hasTransactionToUndo()) {
             this.tps.undoTransaction();
+            document.getElementById('undo-button').classList.add("disabled");
+            document.getElementById('redo-button').classList.remove("disabled");
+        }
+        if (this.tps.hasTransactionToUndo()) {
+            document.getElementById('undo-button').classList.remove("disabled");
         }
     }
     redo = () => {
         if (this.tps.hasTransactionToRedo()) {
-            this.tps.doTransaction(); 
+            this.tps.doTransaction();
+            document.getElementById('redo-button').classList.add("disabled");
+            document.getElementById('undo-button').classList.remove("disabled"); 
+        }
+        if (this.tps.hasTransactionToRedo()) {
+            document.getElementById('redo-button').classList.remove("disabled");
         }
     }
     addChangeItemTransaction = (id, newText) => {
@@ -209,10 +219,14 @@ class App extends React.Component {
         let oldText = this.state.currentList.items[id];
         let transaction = new ChangeItem_Transaction(this, id, oldText, newText);
         this.tps.addTransaction(transaction);
+        document.getElementById('redo-button').classList.add("disabled");
+        document.getElementById('undo-button').classList.remove("disabled");
     }
     addMoveItemTransaction = (oldId, newId) => {
         let transaction = new MoveItem_Transaction(this, oldId, newId);
         this.tps.addTransaction(transaction);
+        document.getElementById('redo-button').classList.add("disabled");
+        document.getElementById('undo-button').classList.remove("disabled");
     }
     render() {
         return (

@@ -12,17 +12,20 @@ export default class ItemCard extends React.Component {
 
     handleClick = (event) => {
         if (event.detail === 1) {
-            this.handleBlur();
+            this.setState({
+                editActive: false
+            });
         }
         else if (event.detail === 2) {
             this.handleToggleEdit(event);
+            
         }
     }
     handleToggleEdit = (event) => {
         this.state.text = this.props.itemName
         this.setState({
             editActive: !this.state.editActive
-        });
+        }); 
     }
     handleUpdate = (event) => {
         this.setState({ text: event.target.value });
@@ -34,11 +37,14 @@ export default class ItemCard extends React.Component {
     }
     handleBlur = () => {
         let textValue = this.state.text;
-        console.log("ItemCard handleBlur: " + textValue);
         this.props.renameItemCallback(this.props.itemKey, textValue);
         this.handleToggleEdit();
     }
     handleDragStart = (event) => {
+        this.state.text = this.props.itemName
+        this.setState({
+            editActive: false
+        })
       event.dataTransfer.setData("key", this.props.itemKey)
     }
     handleDragOver = (event) => {
@@ -46,7 +52,6 @@ export default class ItemCard extends React.Component {
         event.target.classList.add("top5-item-dragged-to");
     }
     handleDragLeave = (event) => {
-        console.log("sdasdasd");
         event.preventDefault();
         event.target.classList.remove("top5-item-dragged-to");
     }
@@ -71,7 +76,7 @@ export default class ItemCard extends React.Component {
                     
                     className={'top5-item'}>
                     
-                    <input
+                    <input autoFocus
                     id={"item-" + itemKey}
                     type='text'
                     currentList = {currentList}
@@ -83,7 +88,7 @@ export default class ItemCard extends React.Component {
                     onDragLeave = {this.handleDragLeave}
                     onDrop = {this.handleDrop}
                     defaultValue={itemName}
-                    draggable = "true"
+                
                 />
                 </div>)
         }

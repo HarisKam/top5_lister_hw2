@@ -14,6 +14,9 @@ export default class ListCard extends React.Component {
             this.handleLoadList(event);
         }
         else if (event.detail === 2) {
+            this.setState({
+                editActive: false
+            });
             this.handleToggleEdit(event);
         }
     }
@@ -54,7 +57,7 @@ export default class ListCard extends React.Component {
 
         if (this.state.editActive) {
             return (
-                <input
+                <input autoFocus
                     id={"list-" + keyNamePair.name}
                     className='list-card'
                     type='text'

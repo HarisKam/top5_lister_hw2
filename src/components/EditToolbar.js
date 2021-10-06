@@ -11,7 +11,7 @@ export default class EditToolbar extends React.Component {
             <div id="edit-toolbar">
                 <div 
                     onClick={undo}
-                    id='undo-button' 
+                    id='undo-button'
                     className="top5-button">
                         &#x21B6;
                 </div>

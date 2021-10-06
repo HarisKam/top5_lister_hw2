@@ -22,9 +22,8 @@ class App extends React.Component {
 
         // THIS WILL TALK TO LOCAL STORAGE
         this.db = new DBManager();
-
         this.tps = new jsTPS();
-
+        
         // GET THE SESSION DATA FROM OUR DATA MANAGER
         let loadedSessionData = this.db.queryGetSessionData();
 
@@ -34,6 +33,7 @@ class App extends React.Component {
             sessionData : loadedSessionData
         }
     }
+
     sortKeyNamePairsByName = (keyNamePairs) => {
         keyNamePairs.sort((keyPair1, keyPair2) => {
             // GET THE LISTS
@@ -150,7 +150,7 @@ class App extends React.Component {
             currentList: newCurrentList,
             sessionData: prevState.sessionData
         }), () => {
-            // ANY AFTER EFFECTS?
+            document.getElementById('close-button').classList.remove("disabled");
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
@@ -160,7 +160,7 @@ class App extends React.Component {
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
             sessionData: this.state.sessionData
         }), () => {
-            // ANY AFTER EFFECTS?
+            document.getElementById('close-button').classList.add("disabled");
         });
     }
     deleteList = (keyNamePair) => {
@@ -185,8 +185,10 @@ class App extends React.Component {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
     }
+    
     confirmDelete = (keyNamePair) => {
-        this.state.sessionData.keyNamePairs.splice(keyNamePair, 1)
+        this.state.sessionData.keyNamePairs.splice(keyNamePair, 1);
+        this.closeCurrentList();
         this.setState(prevState => ({
             sessionData: prevState.sessionData,
             keyNamePairs : this.state.sessionData.keyNamePairs
@@ -228,9 +230,26 @@ class App extends React.Component {
         document.getElementById('redo-button').classList.add("disabled");
         document.getElementById('undo-button').classList.remove("disabled");
     }
+    handleKeyDown = (event) => {
+        if (event.ctrlKey && event.key === 'z') {
+          this.undo();
+          event.preventDefault();
+        }
+        if (event.ctrlKey && event.key === 'y') {
+            this.redo();
+            event.preventDefault();
+        }
+    }
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
+    componentWillUnmount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
     render() {
         return (
-            <div id="app-root">
+            <div id="app-root"
+            onKeyPress={this.handleKeyDown}>
                 <Banner 
                     undo = {this.undo}
                     redo = {this.redo}

@@ -185,6 +185,15 @@ class App extends React.Component {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
     }
+    confirmDelete = (keyNamePair) => {
+        this.state.sessionData.keyNamePairs.splice(keyNamePair, 1)
+        this.setState(prevState => ({
+            sessionData: prevState.sessionData,
+            keyNamePairs : this.state.sessionData.keyNamePairs
+        }))
+        this.db.mutationUpdateSessionData(this.state.sessionData);
+        this.hideDeleteListModal();
+    }
     undo = () =>{
         if (this.tps.hasTransactionToUndo()) {
             this.tps.undoTransaction();
@@ -211,8 +220,8 @@ class App extends React.Component {
                 <Banner 
                     undo = {this.undo}
                     redo = {this.redo}
-                    title='Top 5 Lister'
-                    closeCallback={this.closeCurrentList} />
+                    closeList = {this.closeCurrentList}
+                    title='Top 5 Lister' />
                 <Sidebar
                     heading='Your Lists'
                     currentList={this.state.currentList}
@@ -232,6 +241,7 @@ class App extends React.Component {
                 <DeleteModal
                     listKeyPair = {this.state.keyNamePair}
                     hideDeleteListModalCallback={this.hideDeleteListModal}
+                    confirmDeleteCallback={this.confirmDelete}
                     />
             </div>
         );
